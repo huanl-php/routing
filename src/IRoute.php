@@ -1,19 +1,7 @@
 <?php
 
-
 namespace HuanL\Routing;
-
-
 interface IRoute {
-
-    /**
-     * 注册一个路由
-     * @param array|string $methods
-     * @param string $uri
-     * @param mixed $action
-     * @return mixed
-     */
-    public static function match($methods, $uri, $action);
 
     /**
      * 注册一个get路由
@@ -21,7 +9,7 @@ interface IRoute {
      * @param mixed $action
      * @return mixed
      */
-    public static function get($uri, $action);
+    public function get(string $uri, $action);
 
     /**
      * 注册一个post路由
@@ -29,7 +17,7 @@ interface IRoute {
      * @param mixed $action
      * @return mixed
      */
-    public static function post($uri, $action);
+    public function post(string $uri, $action);
 
     /**
      * 注册一个put路由
@@ -37,7 +25,7 @@ interface IRoute {
      * @param mixed $action
      * @return mixed
      */
-    public static function put($uri, $action);
+    public function put(string $uri, $action);
 
     /**
      * 注册一个delete路由
@@ -45,14 +33,22 @@ interface IRoute {
      * @param mixed $action
      * @return mixed
      */
-    public static function delete($uri, $action);
+    public function delete(string $uri, $action);
 
     /**
-     * 注册一个option路由
+     * 注册一个options路由
      * @param string $uri
      * @param mixed $action
      * @return mixed
      */
-    public static function option($uri, $action);
+    public function options(string $uri, $action);
+
+    /**
+     * 注册所有的路由
+     * @param string $uri
+     * @param mixed $action
+     * @return mixed
+     */
+    public function any(string $uri, $action);
 
 }
