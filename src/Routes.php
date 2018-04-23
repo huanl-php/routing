@@ -46,14 +46,15 @@ class Routes {
     }
 
     /**
-     * 寻找url匹配的route
-     * @param string $url
+     * 寻找url匹配的Route
+     * @param Request $request
+     * @return Route|bool
      */
     public function findRoute(Request $request) {
         $methodRoute = $this->routes[$request->method()] ?? [];
         foreach ($methodRoute as $item) {
-            if ($item->match($request->domain(), $request->path_info()) === true) {
-                return true;
+            if (($route = $item->match($request->domain(), $request->path_info())) !== false) {
+                return $route;
             }
         }
         return false;

@@ -4,6 +4,7 @@
 namespace HuanL\Routing;
 
 
+use HuanL\Container\Container;
 use HuanL\Request\Request;
 
 class Routing implements IRoute {
@@ -26,11 +27,18 @@ class Routing implements IRoute {
     private static $method = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
 
     /**
+     * 容器
+     * @var null
+     */
+    private $container = null;
+
+    /**
      * Route constructor.
      * @param Request $request
      */
-    public function __construct(Request $request) {
+    public function __construct(Request $request, Container $container) {
         $this->request = $request;
+        $this->container = $container;
         $this->routes = new Routes;
     }
 
@@ -103,7 +111,12 @@ class Routing implements IRoute {
      * @return bool
      */
     public function resolve() {
-        return $this->routes->findRoute($this->request);
+        $route = $this->routes->findRoute($this->request);
+        if ($route === false) {
+            return false;
+        }
+        $this->container->instance(Route::class, $route);
+        return $this->container->call($route->getAction(),$route->getParam());
     }
 
 }

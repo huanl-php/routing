@@ -34,7 +34,13 @@ class Route {
      * uri参数名数组
      * @var array
      */
-    private $paramName = [];
+    private $paramList = [];
+
+    /**
+     * 命名空间
+     * @var string
+     */
+    private $namespace = '';
 
     public function __construct(array $method, $uri, $action) {
         $this->method = $method;
@@ -85,18 +91,43 @@ class Route {
      * 与传入的url匹配
      * @param string $domain
      * @param string $url
-     * @return bool
+     * @return bool|Route
      */
     public function match(string $domain, string $url) {
         //首先分析uri是否与url匹配,并提取出参数,暂时没准备写子域名的
-        $this->analyzeUrl($url);
-
+        return $this->analyzeUrl($url);
     }
 
-
+    /**
+     * 解析url
+     * @param string $url
+     * @return $this|bool
+     */
     public function analyzeUrl(string $url) {
         //uri参数格式 例子: /user/{user}  匹配 /user/(.+?)
         $regex = $this->dealUri();
+        if (!preg_match("|$regex|", $url, $matches)) {
+            return false;
+        }
+        if (sizeof($matches) - 1 !== sizeof($this->paramList)) {
+            return false;
+        }
+        for ($i = 1; $i < sizeof($matches); $i++) {
+            $this->paramList[$i - 1]['value'] = $matches[$i];
+        }
+        return $this;
+    }
+
+    /**
+     * 获取解析url后得到的参数,需要先调用analyzeUrl才能获取到参数
+     * @return array
+     */
+    public function getParam() {
+        $param = [];
+        foreach ($this->paramList as $item) {
+            $param[$item['name']] = $item['value'];
+        }
+        return $param;
     }
 
     /**
@@ -104,15 +135,18 @@ class Route {
      * @param string $uri
      */
     public function dealUri() {
+        $this->paramList = [];
         $regex = preg_replace_callback([
-            '/{(\w+?)}/',
-            '/{(\w+?)\?}/'
+            '|{(\w+?)}|',
+            '|{(\w+?)\?}|'
         ], function ($tt) {
-            $this->paramName[] = $tt[1];
-            return '[\w]+';
+            $this->paramList[]['name'] = $tt[1];
+            if (substr($tt[0], strlen($tt[0]) - 2, 1) == '?') {
+                return '(\w*)';
+            }
+            return '(\w+)';
         }, $this->uri);
         return $regex;
     }
-
 
 }

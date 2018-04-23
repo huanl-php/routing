@@ -9,7 +9,8 @@
   ],
   "require": {
     "php": "^7.1",
-    "huanlphp/request": "dev-master"
+    "huanlphp/request": "dev-master",
+    "huanlphp/container": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.1",
