@@ -20,7 +20,12 @@ class Routes {
      */
     private $name = [];
 
-    public function add(Route $routing) {
+    /**
+     * 添加一个路由
+     * @param Route $routing
+     * @return Route
+     */
+    public function add(Route $routing): Route {
         foreach ($routing->getMethod() as $value) {
             $this->routes[$value][$routing->getUri()] = $routing;
         }
@@ -31,7 +36,7 @@ class Routes {
     /**
      * 通过name获取uri
      * @param string $key
-     * @return bool
+     * @return bool|string
      */
     public function name(string $key) {
         //遍历

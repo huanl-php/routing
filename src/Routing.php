@@ -42,32 +42,68 @@ class Routing implements IRoute {
         $this->routes = new Routes;
     }
 
-    public function get(string $uri, $action = null) {
+    /**
+     * get请求
+     * @param string $uri
+     * @param null $action
+     * @return Route
+     */
+    public function get(string $uri, $action = null): Route {
         // TODO: Implement get() method.
         return $this->addRoute('GET', $uri, $action);
     }
 
-    public function post(string $uri, $action) {
+    /**
+     * post请求
+     * @param string $uri
+     * @param mixed $action
+     * @return Route
+     */
+    public function post(string $uri, $action): Route {
         // TODO: Implement post() method.
         return $this->addRoute('POST', $uri, $action);
     }
 
-    public function put(string $uri, $action) {
+    /**
+     * put请求
+     * @param string $uri
+     * @param mixed $action
+     * @return Route
+     */
+    public function put(string $uri, $action): Route {
         // TODO: Implement post() method.
         return $this->addRoute('PUT', $uri, $action);
     }
 
-    public function delete(string $uri, $action) {
+    /**
+     * delete请求
+     * @param string $uri
+     * @param mixed $action
+     * @return Route
+     */
+    public function delete(string $uri, $action): Route {
         // TODO: Implement post() method.
         return $this->addRoute('DELETE', $uri, $action);
     }
 
-    public function options(string $uri, $action) {
+    /**
+     * options请求
+     * @param string $uri
+     * @param mixed $action
+     * @return Route
+     */
+    public function options(string $uri, $action): Route {
         // TODO: Implement post() method.
         return $this->addRoute('DELETE', $uri, $action);
     }
 
-    public function any(string $uri, $action) {
+    /**
+     * 所有操作
+     * @param string $uri
+     * @param mixed $action
+     * @return Route
+     */
+    public function any(string $uri, $action): Route {
         // TODO: Implement any() method.
         return $this->addRoute(static::$method, $uri, $action);
     }
@@ -79,7 +115,7 @@ class Routing implements IRoute {
      * @param $action
      * @return Route
      */
-    protected function addRoute($method, $uri, $action) {
+    public function addRoute($method, $uri, $action): Route {
         if (is_string($method)) {
             $method = [$method];
         }
@@ -93,14 +129,14 @@ class Routing implements IRoute {
      * @param $action
      * @return Route
      */
-    public function newRoute($method, $uri, $action) {
+    public function newRoute($method, $uri, $action): Route {
         return new Route($method, $uri, $action);
     }
 
     /**
      * 通过名字获取uri
      * @param $key
-     * @return bool
+     * @return bool|string
      */
     public function name($key) {
         return $this->routes->name($key);
@@ -108,7 +144,7 @@ class Routing implements IRoute {
 
     /**
      * 解析路由
-     * @return bool
+     * @return mixed
      */
     public function resolve() {
         $route = $this->routes->findRoute($this->request);
@@ -116,7 +152,7 @@ class Routing implements IRoute {
             return false;
         }
         $this->container->instance(Route::class, $route);
-        return $this->container->call($route->getAction(),$route->getParam());
+        return $this->container->call($route->getAction(), $route->getParam());
     }
 
 }

@@ -104,7 +104,6 @@ class Route {
      * @return $this|bool
      */
     public function analyzeUrl(string $url) {
-        //uri参数格式 例子: /user/{user}  匹配 /user/(.+?)
         $regex = $this->dealUri();
         if (!preg_match("|$regex|", $url, $matches)) {
             return false;
@@ -122,7 +121,7 @@ class Route {
      * 获取解析url后得到的参数,需要先调用analyzeUrl才能获取到参数
      * @return array
      */
-    public function getParam() {
+    public function getParam(): array {
         $param = [];
         foreach ($this->paramList as $item) {
             $param[$item['name']] = $item['value'];
@@ -132,16 +131,16 @@ class Route {
 
     /**
      * 处理uri,转换成正则的形式,并提取出参数
-     * @param string $uri
+     * @return string
      */
-    public function dealUri() {
+    public function dealUri(): string {
         $this->paramList = [];
         $regex = preg_replace_callback([
             '|{(\w+?)}|',
             '|{(\w+?)\?}|'
-        ], function ($tt) {
-            $this->paramList[]['name'] = $tt[1];
-            if (substr($tt[0], strlen($tt[0]) - 2, 1) == '?') {
+        ], function ($match) {
+            $this->paramList[]['name'] = $match[1];
+            if (substr($match[0], strlen($match[0]) - 2, 1) == '?') {
                 return '(\w*)';
             }
             return '(\w+)';
