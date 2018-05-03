@@ -148,4 +148,21 @@ class Route {
         return $regex;
     }
 
+    /**
+     * 设置命名空间
+     * @param string $namespace
+     * @return Route
+     */
+    public function setNamespace(string $namespace): Route {
+        $this->namespace = $namespace;
+        return $this;
+    }
+
+    /**
+     * 返回命名空间
+     * @return string
+     */
+    public function getNamespace(): string {
+        return $this->namespace;
+    }
 }
