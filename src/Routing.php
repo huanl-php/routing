@@ -311,8 +311,6 @@ class Routing implements IRoute {
             }
         }
         $this->container->instance(Route::class, $route);
-        return $this->container->call($route->getNamespace().'\\'.$route->getAction(), $route->getParam());
+        return $this->container->call($route->getAction(), $route->getParam());
     }
-
-
 }

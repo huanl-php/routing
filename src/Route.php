@@ -3,6 +3,7 @@
 
 namespace HuanL\Routing;
 
+use Closure;
 
 class Route {
 
@@ -56,9 +57,19 @@ class Route {
     }
 
     /**
-     * @return mixed
+     * 返回路由操作
+     * @param string $namespace
+     * @return Closure|mixed
      */
     public function getAction() {
+        //判断是否为匿名函数,如果是匿名函数直接返回
+        //然后判断命名空间是否为空为空直接返回
+        //不为空添加上再返回,如果都是空的直接返回
+        if ($this->action instanceof Closure) {
+            return $this->action;
+        } else if (!empty($this->namespace)) {
+            return $this->namespace . '//' . $this->action;
+        }
         return $this->action;
     }
 
