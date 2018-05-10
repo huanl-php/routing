@@ -115,7 +115,10 @@ class Route {
      * @return $this|bool
      */
     public function analyzeUrl(string $url) {
-        $regex = $this->dealUri();
+        $regex = '^'.$this->dealUri();
+        if (sizeof($this->paramList)<=0){
+            $regex.='$';
+        }
         if (!preg_match("|$regex|", $url, $matches)) {
             return false;
         }
