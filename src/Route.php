@@ -38,12 +38,18 @@ class Route {
     private $paramList = [];
 
     /**
+     * uri中的参数数组
+     * @var array
+     */
+    private $paramValue = [];
+
+    /**
      * 命名空间
      * @var string
      */
     private $namespace = '';
 
-    public function __construct(array $method, $uri, $action) {
+    public function __construct(array $method, $uri = '', $action = '') {
         $this->method = $method;
         $this->uri = $uri;
         $this->action = $action;
@@ -57,20 +63,45 @@ class Route {
     }
 
     /**
-     * 返回路由操作
+     * 获取路由的action操作
+     * @return mixed
+     */
+    public function getAction() {
+        return $this->action;
+    }
+
+    /**
+     * 执行路由的action操作
      * @param string $namespace
      * @return Closure|mixed
      */
-    public function getAction() {
+    public function execAction() {
         //判断是否为匿名函数,如果是匿名函数直接返回
         //然后判断命名空间是否为空为空直接返回
         //不为空添加上再返回,如果都是空的直接返回
         if ($this->action instanceof Closure) {
             return $this->action;
-        } else if (!empty($this->namespace)) {
-            return $this->namespace . '//' . $this->action;
         }
-        return $this->action;
+        //判断action是不是只是一个类名
+        //如果只是一个类名,在参数中查找有没有action这个参数的存在
+        //如果action存在,那么可以带上这个参数
+        $retAction = $this->action;
+        $param = $this->getParam();
+        if (!empty($this->namespace)) {
+            $retAction = $this->namespace . '\\' . $retAction;
+        }
+        if (class_exists($retAction)) {
+            //是一个类并且存在action这个参数
+            if (isset($param['action'])) {
+                $retAction = $retAction . '@' . $param['action'];
+            }
+        } else {
+            //不是一个类,判断有没有controller和action参数
+            if (isset($param['controller']) && isset($param['action'])) {
+                $retAction = $retAction . $param['controller'] . '@' . $param['action'];
+            }
+        }
+        return $retAction;
     }
 
     /**
@@ -115,9 +146,9 @@ class Route {
      * @return $this|bool
      */
     public function analyzeUrl(string $url) {
-        $regex = '^'.$this->dealUri();
-        if (sizeof($this->paramList)<=0){
-            $regex.='$';
+        $regex = '^' . $this->dealUri();
+        if (sizeof($this->paramList) <= 0) {
+            $regex .= '$';
         }
         if (!preg_match("|$regex|", $url, $matches)) {
             return false;
@@ -136,11 +167,12 @@ class Route {
      * @return array
      */
     public function getParam(): array {
-        $param = [];
-        foreach ($this->paramList as $item) {
-            $param[$item['name']] = $item['value'];
+        if ($this->paramValue == []) {
+            foreach ($this->paramList as $item) {
+                $this->paramValue[$item['name']] = $item['value'];
+            }
         }
-        return $param;
+        return $this->paramValue;
     }
 
     /**
@@ -180,3 +212,4 @@ class Route {
         return $this->namespace;
     }
 }
+

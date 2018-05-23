@@ -64,10 +64,10 @@ class Routing implements IRoute {
     /**
      * get请求
      * @param string $uri
-     * @param null $action
+     * @param mixed $action
      * @return Route
      */
-    public function get(string $uri, $action = null): Route {
+    public function get(string $uri, $action = ''): Route {
         // TODO: Implement get() method.
         return $this->addRoute('GET', $uri, $action);
     }
@@ -78,7 +78,7 @@ class Routing implements IRoute {
      * @param mixed $action
      * @return Route
      */
-    public function post(string $uri, $action): Route {
+    public function post(string $uri, $action= ''): Route {
         // TODO: Implement post() method.
         return $this->addRoute('POST', $uri, $action);
     }
@@ -89,7 +89,7 @@ class Routing implements IRoute {
      * @param mixed $action
      * @return Route
      */
-    public function put(string $uri, $action): Route {
+    public function put(string $uri, $action= ''): Route {
         // TODO: Implement post() method.
         return $this->addRoute('PUT', $uri, $action);
     }
@@ -100,7 +100,7 @@ class Routing implements IRoute {
      * @param mixed $action
      * @return Route
      */
-    public function delete(string $uri, $action): Route {
+    public function delete(string $uri, $action= ''): Route {
         // TODO: Implement post() method.
         return $this->addRoute('DELETE', $uri, $action);
     }
@@ -111,7 +111,7 @@ class Routing implements IRoute {
      * @param mixed $action
      * @return Route
      */
-    public function options(string $uri, $action): Route {
+    public function options(string $uri, $action= ''): Route {
         // TODO: Implement post() method.
         return $this->addRoute('DELETE', $uri, $action);
     }
@@ -122,7 +122,7 @@ class Routing implements IRoute {
      * @param mixed $action
      * @return Route
      */
-    public function any(string $uri, $action): Route {
+    public function any(string $uri, $action= ''): Route {
         // TODO: Implement any() method.
         return $this->addRoute(static::$method, $uri, $action);
     }
@@ -134,7 +134,7 @@ class Routing implements IRoute {
      * @param $action
      * @return Route
      */
-    public function addRoute($method, $uri, $action): Route {
+    public function addRoute($method, $uri, $action= ''): Route {
         if (is_string($method)) {
             $method = [$method];
         }
@@ -311,6 +311,6 @@ class Routing implements IRoute {
             }
         }
         $this->container->instance(Route::class, $route);
-        return $this->container->call($route->getAction(), $route->getParam());
+        return $this->container->call($route->execAction(), $route->getParam());
     }
 }
