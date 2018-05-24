@@ -44,6 +44,18 @@ class Route {
     private $paramValue = [];
 
     /**
+     * 类方法
+     * @var string
+     */
+    private $classMethod = '';
+
+    /**
+     * 控制器
+     * @var mixed
+     */
+    private $controller = null;
+
+    /**
      * 命名空间
      * @var string
      */
@@ -90,18 +102,45 @@ class Route {
         if (!empty($this->namespace)) {
             $retAction = $this->namespace . '\\' . $retAction;
         }
+        //判断有没有@,如果有,处理这个,设置控制器和操作
+        //然后直接返回
+        if ($atPos = strpos($retAction, '@')) {
+            $this->controller = substr($retAction, 0, $atPos);
+            $this->classMethod = substr($retAction, $atPos + 1);
+            return $retAction;
+        }
         if (class_exists($retAction)) {
             //是一个类并且存在action这个参数
             if (isset($param['action'])) {
-                $retAction = $retAction . '@' . $param['action'];
+                $this->controller = $retAction;
+                $this->classMethod = $param['action'];
+                $retAction = $this->controller . '@' . $this->classMethod;
             }
         } else {
             //不是一个类,判断有没有controller和action参数
             if (isset($param['controller']) && isset($param['action'])) {
-                $retAction = $retAction . $param['controller'] . '@' . $param['action'];
+                $this->controller = $retAction . $param['controller'];
+                $this->classMethod = $param['action'];
+                $retAction = $this->controller . '@' . $this->classMethod;
             }
         }
         return $retAction;
+    }
+
+    /**
+     * 获取控制器
+     * @return mixed
+     */
+    public function getController() {
+        return $this->controller;
+    }
+
+    /**
+     * 获取调用的类方法名
+     * @return string
+     */
+    public function getClassMethod(): string {
+        return $this->classMethod;
     }
 
     /**
