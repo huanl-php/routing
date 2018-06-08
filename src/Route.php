@@ -119,7 +119,7 @@ class Route {
         } else {
             //不是一个类,判断有没有controller和action参数
             if (isset($param['controller']) && isset($param['action'])) {
-                $this->controller = $retAction . $param['controller'];
+                $this->controller = $retAction . $param['controller'] . 'Controller';
                 $this->classMethod = $param['action'];
                 $retAction = $this->controller . '@' . $this->classMethod;
             }
