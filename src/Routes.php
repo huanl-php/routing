@@ -38,18 +38,20 @@ class Routes {
         return $routing->setNamespace($this->namespace);
     }
 
-
     /**
      * 通过name获取uri
      * @param string $key
      * @return bool|string
      */
     public function name(string $key) {
+        if (isset($this->name[$key])) {
+            return $this->name[$key];
+        }
         //遍历
         foreach ($this->routes as $value) {
             foreach ($value as $item) {
                 if ($item->getName() == $key) {
-                    return $item->getUri();
+                    return $this->name[$key] = $item->getUri();
                 }
             }
         }

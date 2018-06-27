@@ -192,10 +192,10 @@ class Routing implements IRoute {
         }
         foreach ($this->group as $item) {
             if (($name = $item->name($key)) !== false) {
-                break;
+                return $name;
             }
         }
-        return $name;
+        return false;
     }
 
     /**
