@@ -215,7 +215,7 @@ class Routing implements IRoute {
             $pos = strpos($content, 'namespace ') + 10;
             $namespace = substr($content, $pos, strpos($content, "\n", $pos) - $pos - 2);
             preg_match_all(
-                '|/\*\*[\s\S]*?\* @route (.*?)[\s]\n[\s\S]*?\*/[\s]*?public function (.*?)\(|',
+                '|/\*\*[\s\S]*?\* @route (.*?)\s?\n[\s\S]*?\*/[\s]*?public function (.*?)\(|',
                 $content, $matches, PREG_SET_ORDER
             );
             foreach ($matches as $value) {
