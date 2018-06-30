@@ -213,7 +213,7 @@ class Routing implements IRoute {
             $content = file_get_contents($file);
             //匹配命名空间
             $pos = strpos($content, 'namespace ') + 10;
-            $namespace = substr($content, $pos, strpos($content, "\n", $pos) - $pos - 2);
+            $namespace = substr($content, $pos, strpos($content, ";", $pos) - $pos);
             preg_match_all(
                 '|/\*\*[\s\S]*?\* @route (.*?)\s?\n[\s\S]*?\*/[\s]*?public function (.*?)\(|',
                 $content, $matches, PREG_SET_ORDER
