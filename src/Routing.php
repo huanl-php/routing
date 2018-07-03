@@ -318,6 +318,10 @@ class Routing implements IRoute {
             $this->container->alias('controller', $route->getController());
         }
         $this->container->instance(Route::class, $route);
-        return $this->container->call($action, $route->getParam());
+        try {
+            return $this->container->call($action, $route->getParam());
+        } catch (\Throwable $throwable) {
+            return false;
+        }
     }
 }
