@@ -318,6 +318,7 @@ class Routing implements IRoute {
             $this->container->alias('controller', $route->getController());
         }
         $this->container->instance(Route::class, $route);
-        return $this->container->call($action, $route->getParam());
+        $param = array_merge($_GET, $route->getParam());
+        return $this->container->call($action, $param);
     }
 }
